@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityStandardAssets.CrossPlatformInput;
 
 public class PlayerController : MonoBehaviour
 {
     #region Variables
+
     float Xoffset;
     float Yoffset;
     float Xthrow;
     float Ythrow;
-    #endregion
+    
 
     [Header("Required")]
     public GameObject[] Guns;
@@ -17,7 +19,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Constrains & speed")]
     public float Xrange;
-    public float Yrange;
+    public float YuRange;
     public float Speed;
 
     [Header("Rotation Factors")]
@@ -26,6 +28,15 @@ public class PlayerController : MonoBehaviour
     public float YawCfactor;
     public float pitchCfactor;
     public float RollCfactor;
+
+    #endregion
+
+    MeshRenderer mR;
+
+    private void Start()
+    {
+        mR = GetComponent<MeshRenderer>();
+    }
 
     void Update()
     {
@@ -41,6 +52,13 @@ public class PlayerController : MonoBehaviour
     void Collided()
     {
         IsDestroyed = true;
+        mR.enabled = false;
+        Invoke("LoadSameLevel", 1f);
+    }
+
+    void LoadSameLevel()
+    {
+        SceneManager.LoadScene(1);
     }
 
     void HandleFiring()
@@ -92,7 +110,7 @@ public class PlayerController : MonoBehaviour
 
         Yoffset = Time.deltaTime * Ythrow * Speed;
         float rawYpos = transform.localPosition.y + Yoffset;
-        float clampedYoff = Mathf.Clamp(rawYpos, -Yrange, Yrange);
+        float clampedYoff = Mathf.Clamp(rawYpos, 0f, YuRange);
 
         transform.localPosition = new Vector3(clampedXoff, transform.localPosition.y, transform.localPosition.z);
 
