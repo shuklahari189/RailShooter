@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Constrains & speed")]
     public float Xrange;
+    public float YdRange;
     public float YuRange;
     public float Speed;
 
@@ -31,10 +32,12 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
+    BoxCollider bx;
     MeshRenderer mR;
 
     private void Start()
     {
+        bx = GetComponent<BoxCollider>();
         mR = GetComponent<MeshRenderer>();
     }
 
@@ -53,6 +56,8 @@ public class PlayerController : MonoBehaviour
     {
         IsDestroyed = true;
         mR.enabled = false;
+        bx.enabled = false;
+        Fire(false);
         Invoke("LoadSameLevel", 1f);
     }
 
@@ -65,15 +70,15 @@ public class PlayerController : MonoBehaviour
     {
         if (CrossPlatformInputManager.GetButton("Fire"))
         {
-            SetGunsActive(true);
+            Fire(true);
         }
         else
         {
-            SetGunsActive(false);
+            Fire(false);
         }
     }
 
-    void SetGunsActive(bool GunsActive)
+    void Fire(bool GunsActive)
     {
         foreach(GameObject gun in Guns)
         {
@@ -110,7 +115,7 @@ public class PlayerController : MonoBehaviour
 
         Yoffset = Time.deltaTime * Ythrow * Speed;
         float rawYpos = transform.localPosition.y + Yoffset;
-        float clampedYoff = Mathf.Clamp(rawYpos, 0f, YuRange);
+        float clampedYoff = Mathf.Clamp(rawYpos, YdRange, YuRange);
 
         transform.localPosition = new Vector3(clampedXoff, transform.localPosition.y, transform.localPosition.z);
 
